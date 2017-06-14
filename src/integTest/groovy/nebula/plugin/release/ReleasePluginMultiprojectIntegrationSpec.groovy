@@ -112,52 +112,52 @@ class ReleasePluginMultiprojectIntegrationSpec extends GitVersioningIntegrationS
         noExceptionThrown()
     }
 
-    def 'tasks task does not fail with our publishing plugin'() {
-        buildFile << """
-            buildscript {
-                repositories { jcenter() }
-                dependencies {
-                    classpath 'com.netflix.nebula:nebula-publishing-plugin:4.4.4'
-                }
-            }
-
-            allprojects {
-                ${applyPlugin(PublishingPlugin)}
-                ${applyPlugin(BintrayPlugin)}
-            }
-
-            subprojects { sub ->
-                ${applyPlugin(BintrayPlugin)}
-                apply plugin: 'nebula.ivy-publish'
-                apply plugin: 'nebula.javadoc-jar'
-                apply plugin: 'nebula.source-jar'
-
-
-                publishing {
-                    repositories {
-                        ivy {
-                            name 'localIvy'
-                            url 'build/localivy'
-                        }
-                    }
-                }
-
-                sub.tasks.artifactoryPublish.dependsOn ":\${sub.name}:generateDescriptorFileForNebulaIvyPublication"
-            }
-        """.stripIndent()
-
-        when:
-        def results = runTasksSuccessfully('tasks', '--all')
-
-        then:
-        noExceptionThrown()
-
-        when:
-        def r = runTasksSuccessfully('snapshot', '-m')
-
-        then:
-        noExceptionThrown()
-        r.wasExecuted(':release')
-        r.wasExecuted(':test-release-common:generateDescriptorFileForNebulaIvyPublication')
-    }
+//    def 'tasks task does not fail with our publishing plugin'() {
+//        buildFile << """
+//            buildscript {
+//                repositories { jcenter() }
+//                dependencies {
+//                    classpath 'com.netflix.nebula:nebula-publishing-plugin:4.4.4'
+//                }
+//            }
+//
+//            allprojects {
+//                ${applyPlugin(PublishingPlugin)}
+//                ${applyPlugin(BintrayPlugin)}
+//            }
+//
+//            subprojects { sub ->
+//                ${applyPlugin(BintrayPlugin)}
+//                apply plugin: 'nebula.ivy-publish'
+//                apply plugin: 'nebula.javadoc-jar'
+//                apply plugin: 'nebula.source-jar'
+//
+//
+//                publishing {
+//                    repositories {
+//                        ivy {
+//                            name 'localIvy'
+//                            url 'build/localivy'
+//                        }
+//                    }
+//                }
+//
+//                sub.tasks.artifactoryPublish.dependsOn ":\${sub.name}:generateDescriptorFileForNebulaIvyPublication"
+//            }
+//        """.stripIndent()
+//
+//        when:
+//        def results = runTasksSuccessfully('tasks', '--all')
+//
+//        then:
+//        noExceptionThrown()
+//
+//        when:
+//        def r = runTasksSuccessfully('snapshot', '-m')
+//
+//        then:
+//        noExceptionThrown()
+//        r.wasExecuted(':release')
+//        r.wasExecuted(':test-release-common:generateDescriptorFileForNebulaIvyPublication')
+//    }
 }
